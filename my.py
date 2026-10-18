@@ -125,9 +125,31 @@ class SpeechToTextPage(ttk.Frame):
 
         ttk.Button(self, text="Back", command=lambda: master.switch_frame(HomePage)).pack(pady=10)
 
-    def select_audio_file(self):
-        self.file_path = filedialog.askopenfilename(filetypes=[("Audio Files", ".wav;.mp3")])
-        self.file_path_label.config(text="Selected File: " + self.file_path)
+    
+def select_audio_file(self):
+    file_path = filedialog.askopenfilename(
+        title="Select an audio file",
+        filetypes=[
+            ("Supported audio files", "*.wav *.aiff *.aif *.flac"),
+        ],
+    )
+
+    if not file_path:
+        return
+
+    supported_extensions = {".wav", ".aiff", ".aif", ".flac"}
+    extension = os.path.splitext(file_path)[1].lower()
+
+    if extension not in supported_extensions:
+        messagebox.showerror(
+            "Unsupported Audio Format",
+            "Please select a WAV, AIFF, AIF, or FLAC file.",
+        )
+        return
+
+    self.file_path = file_path
+    self.label.config(text=f"Selected: {os.path.basename(file_path)}")
+
 
     def save_text(self):
         if hasattr(self, 'file_path'):
